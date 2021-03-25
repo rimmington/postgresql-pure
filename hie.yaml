@@ -1,0 +1,37 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:postgresql-pure"
+
+    - path: "test-doctest"
+      component: "postgresql-pure:test:doctest"
+
+    - path: "test-hdbc-postgresql"
+      component: "postgresql-pure:test:hdbc-postgresql"
+
+    - path: "src"
+      component: "postgresql-pure:test:hdbc-postgresql"
+
+    - path: "test-original"
+      component: "postgresql-pure:test:original"
+
+    - path: "test-relational-record"
+      component: "postgresql-pure:test:relational-record"
+
+    - path: "benchmark/requests-per-second.hs"
+      component: "postgresql-pure:bench:requests-per-second"
+
+    - path: "benchmark/RepeatThreadPool.hs"
+      component: "postgresql-pure:bench:requests-per-second"
+
+    - path: "benchmark/Paths_postgresql_pure.hs"
+      component: "postgresql-pure:bench:requests-per-second"
+
+    - path: "benchmark/requests-per-second-constant.hs"
+      component: "postgresql-pure:bench:requests-per-second-constant"
+
+    - path: "benchmark/RepeatThreadPool.hs"
+      component: "postgresql-pure:bench:requests-per-second-constant"
+
+    - path: "benchmark/Paths_postgresql_pure.hs"
+      component: "postgresql-pure:bench:requests-per-second-constant"
