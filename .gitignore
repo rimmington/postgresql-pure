@@ -1,7 +1,10 @@
 .stack-work/
 dist-newstyle/
+dist/
 stack.yaml
 *~
+*.local
+.ghc.environment.*
 
 TAGS
 
