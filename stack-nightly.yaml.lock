@@ -5,12 +5,12 @@
 
 packages:
 - completed:
-    hackage: homotuple-0.1.2.1@sha256:845e9a1a3b14f2ad058729d8ebbe8fb3583d14f9a485bff717e866e5df6bc76d,1952
+    hackage: homotuple-0.2.0.0@sha256:4b6b315c645d3f944d494220fbf14b6b3b890c79ce03c4dd4be61636ef81d8a8,1952
     pantry-tree:
       size: 605
-      sha256: 23c1fefddde7355bc136766ca71844ca56c9f93250356b1527ff99a16290cafa
+      sha256: 0afc19e17e363cba0a458d790d69e673eeca49d05258101a11582160e10caa75
   original:
-    hackage: homotuple-0.1.2.1@rev:0
+    hackage: homotuple-0.2.0.0@rev:0
 - completed:
     hackage: list-tuple-0.1.3.0@sha256:01ee6cb392c810ae6799672fc2c1c9722bcd96f8f79a1d01dd02ad20f153396f,2520
     pantry-tree:
@@ -26,26 +26,22 @@ packages:
   original:
     hackage: single-tuple-0.1.1.0@rev:0
 - completed:
-    hackage: postgresql-placeholder-converter-0.1.0.0@sha256:cc5ae9483bd8c965fd7db8a3e8e406d75b446318abecfdce5f2330bf220b8a56,2340
+    hackage: postgresql-placeholder-converter-0.2.0.0@sha256:b40af27779c1fd0366c67ccdf1d96975657e0c2199e8bf87f1d15af99a57a40a,2305
     pantry-tree:
-      size: 608
-      sha256: 1a22ef9e412ed295f139f904f556f64317e43afcf2f66092ca8feed9bb2984c7
+      size: 609
+      sha256: 78272e4202cdbfdee90f3854e517f2262c4487445e849501908582cb0f6f3ad4
   original:
-    hackage: postgresql-placeholder-converter-0.1.0.0@rev:1
+    hackage: postgresql-placeholder-converter-0.2.0.0@rev:0
 - completed:
-    size: 25744
-    url: https://github.com/tfausak/hdbc-postgresql/archive/90372d22e4ec416faa00b18a715303027fa1128e.tar.gz
-    name: HDBC-postgresql
-    version: 2.3.2.7
-    sha256: c6a76948a8272e5e48948a433cde76e0a5a04a8681b8564cf4b166df13d2b5cb
+    hackage: either-result-0.3.1.0@sha256:5c85fd23c8ee1691c73066888e6de6dd1ed3ff0efc8755c62635cabe72fcee8d,2288
     pantry-tree:
-      size: 1789
-      sha256: 692b60c49e24e6700a654a1ce67d12cfa9d8e6ab49be9771f9bca27a630155d2
+      size: 887
+      sha256: a5b060583cda1c0dd13dadb8de4d168492c260765af261566616e0bedbfcc157
   original:
-    url: https://github.com/tfausak/hdbc-postgresql/archive/90372d22e4ec416faa00b18a715303027fa1128e.tar.gz
+    hackage: either-result-0.3.1.0@rev:0
 snapshots:
 - completed:
-    size: 508765
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2020/7/9.yaml
-    sha256: b7d7a78a6eb58419c0332655eb21100430f1e983d1c7cfca00092943750bbad8
-  original: nightly-2020-07-09
+    size: 575878
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2021/3/21.yaml
+    sha256: fa25e3eca6a9b206994d5ed783bde594c6108bc633f6b350bd2e13044ff3d327
+  original: nightly-2021-03-21

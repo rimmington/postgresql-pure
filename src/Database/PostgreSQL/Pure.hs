@@ -139,6 +139,8 @@ module Database.PostgreSQL.Pure
   , ToField (..)
   , ToRecord (..)
   , Raw (..)
+  , SqlIdentifier (..)
+  , TimeOfDayWithTimeZone (..)
   , Length
     -- * Exception
   , Exception.Exception (..)
@@ -159,9 +161,11 @@ import           Database.PostgreSQL.Pure.Internal.Data       (Address (AddressN
                                                                FromField (fromField), FromRecord (fromRecord),
                                                                MessageResult, Oid, Pid, PortalName (PortalName),
                                                                PreparedStatementName (PreparedStatementName),
-                                                               Query (Query), Raw (Null, Value), StringDecoder,
-                                                               StringEncoder, ToField (toField), ToRecord (toRecord),
-                                                               TransactionState)
+                                                               Query (Query), Raw (Null, Value),
+                                                               SqlIdentifier (SqlIdentifier), StringDecoder,
+                                                               StringEncoder,
+                                                               TimeOfDayWithTimeZone (TimeOfDayWithTimeZone, timeOfDay, timeZone),
+                                                               ToField (toField), ToRecord (toRecord), TransactionState)
 import qualified Database.PostgreSQL.Pure.Internal.Data       as Data
 import qualified Database.PostgreSQL.Pure.Internal.Exception  as Exception
 import           Database.PostgreSQL.Pure.Internal.Length     (Length)
@@ -171,7 +175,7 @@ import qualified Database.PostgreSQL.Pure.Internal.Query      as Query
 import           Data.Bifunctor                               (bimap)
 import           Data.Kind                                    (Type)
 import           Data.Proxy                                   (Proxy (Proxy))
-import           Data.Tuple.Homotuple                         (Homotuple, IsHomolisttuple, IsHomotupleItem)
+import           Data.Tuple.Homotuple                         (Homotuple)
 import qualified Data.Tuple.List                              as Tuple
 import           GHC.Exts                                     (IsList (Item, fromList, toList))
 import           GHC.Records                                  (HasField (getField))
@@ -196,7 +200,7 @@ instance (oids ~ Homotuple n Oid, Item oids ~ Oid, IsList oids) => HasField "par
   getField (PreparedStatement Data.PreparedStatement { parameterOids }) = fromList parameterOids
 
 -- | To get a list of column infos of the result record.
-resultInfos :: (IsHomolisttuple m ColumnInfo, IsHomotupleItem m ColumnInfo) => PreparedStatement n m -> Homotuple m ColumnInfo
+resultInfos :: (IsList (Homotuple m ColumnInfo), ColumnInfo ~ Item (Homotuple m ColumnInfo)) => PreparedStatement n m -> Homotuple m ColumnInfo
 resultInfos (PreparedStatement Data.PreparedStatement { resultInfos }) = fromList resultInfos
 
 -- | This represents a prepared statement which is not yet processed by a server.
@@ -250,7 +254,7 @@ newtype ExecutedProcedure (parameterLength :: Nat) (resultLength :: Nat) r =
 
 type instance MessageResult (ExecutedProcedure n m r) = (PreparedStatement n m, Portal n m, Executed n m r, Maybe ErrorFields) -- TODO don't error fields themselves
 
--- | This means that @r@ has a 'name' accesser.
+-- | This means that @r@ has a 'name' accessor.
 class HasName r where
   -- | Type of name of @r@.
   type Name r :: Type
@@ -272,7 +276,7 @@ instance HasName (Portal n m) where
 instance HasName (PortalProcedure n m) where
   type Name (PortalProcedure n m) = PortalName
 
--- | This means that @r@ has a 'parameterOids' accesser.
+-- | This means that @r@ has a 'parameterOids' accessor.
 class HasParameterOids r a where
   -- | To get OIDs of a parameter.
   parameterOids :: r -> a
@@ -290,16 +294,16 @@ parse
   :: forall plen rlen.
      ( KnownNat plen
      , KnownNat rlen
-     , IsHomotupleItem plen Oid
-     , IsHomotupleItem rlen ColumnInfo
-     , IsHomotupleItem rlen Oid
-     , IsHomolisttuple rlen Oid
-     , IsHomolisttuple plen Oid
-     , IsHomolisttuple rlen ColumnInfo
+     , Item (Homotuple plen Oid) ~ Oid
+     , Item (Homotuple rlen ColumnInfo) ~ ColumnInfo
+     , Item (Homotuple rlen Oid) ~ Oid
+     , IsList (Homotuple rlen Oid)
+     , IsList (Homotuple plen Oid)
+     , IsList (Homotuple rlen ColumnInfo)
      )
   => PreparedStatementName -- ^ A new name of prepared statement.
-  -> Query -- ^ SQL whose placeoholder style is dollar style.
-  -> Maybe (Homotuple plen Oid, Homotuple rlen Oid) -- ^ On 'Nothing' an additional pair of a request and a resposne is necessary.
+  -> Query -- ^ SQL whose placeholder style is dollar style.
+  -> Maybe (Homotuple plen Oid, Homotuple rlen Oid) -- ^ On 'Nothing' an additional pair of a request and a response is necessary.
                                                     -- If concrete OIDs are given, it will be pass over.
   -> PreparedStatementProcedure plen rlen
 parse name query oids =
@@ -356,8 +360,8 @@ class Execute p where
   execute
     :: forall plen result.
        ( FromRecord result
-       , IsHomotupleItem (Length result) ColumnInfo
-       , IsHomolisttuple (Length result) ColumnInfo
+       , ColumnInfo ~ Item (Homotuple (Length result) ColumnInfo)
+       , IsList (Homotuple (Length result) ColumnInfo)
        )
     => Word -- ^ How many records to get. "0" means unlimited.
     -> StringDecoder -- ^ How to decode strings.

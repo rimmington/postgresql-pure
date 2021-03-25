@@ -1,15 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PatternSynonyms   #-}
 
 module SpecificDBTests where
 import Database.HDBC
 import Database.HDBC.PostgreSQL.Pure
 import Database.PostgreSQL.Placeholder.Convert (convertQuestionMarkStyleToDollarSignStyle)
+import Data.Either.Result (pattern Success, pattern Error)
 import Test.HUnit
 
 testp inp exp = TestCase $
     case convertQuestionMarkStyleToDollarSignStyle inp of
-      Right x -> assertEqual "" exp x
-      Left y -> assertFailure $ show y
+      Success x -> assertEqual "" exp x
+      Error y -> assertFailure $ show y
 
 tests = TestList 
         [TestLabel "empty" (testp "" ""),

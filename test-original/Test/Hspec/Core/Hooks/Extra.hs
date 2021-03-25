@@ -1,7 +1,12 @@
+{-# LANGUAGE CPP #-}
+
 module Test.Hspec.Core.Hooks.Extra
   ( beforeAllWith
   ) where
 
+#if MIN_VERSION_hspec(2,7,6)
+import           Test.Hspec
+#else
 import           Test.Hspec.Core.Hooks
 import           Test.Hspec.Core.Spec
 
@@ -28,3 +33,4 @@ beforeAllWith :: (b -> IO a) -> SpecWith a -> SpecWith b
 beforeAllWith action spec = do
   mver <- runIO (newMVar Empty)
   beforeWith (memoize mver . action) spec
+#endif

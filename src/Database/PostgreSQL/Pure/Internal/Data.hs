@@ -2,6 +2,7 @@
 {-# LANGUAGE CPP                        #-}
 {-# LANGUAGE DataKinds                  #-}
 {-# LANGUAGE DefaultSignatures          #-}
+{-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE DerivingStrategies         #-}
 {-# LANGUAGE DuplicateRecordFields      #-}
 {-# LANGUAGE FlexibleContexts           #-}
@@ -78,6 +79,7 @@ module Database.PostgreSQL.Pure.Internal.Data
 import           Database.PostgreSQL.Pure.Oid (Oid (Oid))
 
 import           Control.Applicative          ((<|>))
+import           Control.DeepSeq              (NFData)
 import qualified Data.Attoparsec.ByteString   as AP
 import qualified Data.ByteString              as BS
 import qualified Data.ByteString.Builder      as BSB
@@ -176,7 +178,7 @@ data TransactionState
   | Failed -- ^ Transaction failed.
   deriving (Show, Read, Eq, Enum)
 
--- | Proccess ID
+-- | Process ID
 type Pid = Int32
 
 type BackendKey = Int32
@@ -234,7 +236,7 @@ data Response
   | EmptyQueryResponse
   | NoDataResponse
   | ParameterDescriptionResponse ParameterDescription
-  | DebugResponse Debug -- XXX temporal implimentation
+  | DebugResponse Debug -- XXX temporal implementation
 
 data AuthenticationResponse
   = AuthenticationOkResponse
@@ -264,7 +266,7 @@ newtype RowDescription = RowDescription [ColumnInfo] deriving (Show, Read, Eq)
 
 newtype ParameterDescription = ParameterDescription [Oid] deriving (Show, Read, Eq)
 
-newtype Debug = Debug BS.ByteString deriving (Show, Read, Eq) -- XXX temporal implimentation
+newtype Debug = Debug BS.ByteString deriving (Show, Read, Eq) -- XXX temporal implementation
 
 -- | Result of a “Execute” message.
 data ExecuteResult
@@ -329,7 +331,7 @@ pattern Value a = Raw (Just a)
 
 -- | SQL query.
 --
--- This 'Data.String.fromString' counts only ASCII, becouse it is the same with 'BS.ByteString'.
+-- This 'Data.String.fromString' counts only ASCII, because it is the same with 'BS.ByteString'.
 newtype Query = Query BS.ByteString deriving (Show, Read, Eq, Ord, IsString)
 
 -- | To convert a type which means that it is not processed by the server to a respective type which means that it is processed by the server.
@@ -499,7 +501,9 @@ class GToRecord f where
 -- | Type of PostgreSQL @sql_identifier@ type.
 newtype SqlIdentifier = SqlIdentifier BS.ByteString deriving (Show, Read, Eq)
 
-data TimeOfDayWithTimeZone = TimeOfDayWithTimeZone { timeOfDay :: TimeOfDay, timeZone :: TimeZone } deriving (Show, Read, Eq, Ord)
+data TimeOfDayWithTimeZone = TimeOfDayWithTimeZone { timeOfDay :: TimeOfDay, timeZone :: TimeZone } deriving (Show, Read, Eq, Ord, Generic)
+
+instance NFData TimeOfDayWithTimeZone
 
 class Pretty a where
   pretty :: a -> String

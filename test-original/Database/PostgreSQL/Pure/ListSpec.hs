@@ -9,7 +9,7 @@ module Database.PostgreSQL.Pure.ListSpec (spec) where
 import           Database.PostgreSQL.Pure.List
 import qualified Database.PostgreSQL.Pure.Oid     as Oid
 
-import           Test.Hspec
+import           Test.Hspec                       hiding (beforeAllWith)
 import           Test.Hspec.Core.Hooks.Extra
 
 import           Control.Monad                    (void)

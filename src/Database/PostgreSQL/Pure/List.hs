@@ -101,6 +101,8 @@ module Database.PostgreSQL.Pure.List
   , ToField (..)
   , ToRecord (..)
   , Raw (..)
+  , SqlIdentifier (..)
+  , TimeOfDayWithTimeZone (..)
     -- * Exception
   , Exception.Exception (..)
   , Exception.ErrorResponse (..)
@@ -123,7 +125,9 @@ import           Database.PostgreSQL.Pure.Internal.Data       (Address (AddressN
                                                                PortalProcedure, PreparedStatement,
                                                                PreparedStatementName (PreparedStatementName),
                                                                PreparedStatementProcedure, Query (Query),
-                                                               Raw (Null, Value), StringDecoder, StringEncoder,
+                                                               Raw (Null, Value), SqlIdentifier (SqlIdentifier),
+                                                               StringDecoder, StringEncoder,
+                                                               TimeOfDayWithTimeZone (TimeOfDayWithTimeZone, timeOfDay, timeZone),
                                                                ToField (toField), ToRecord (toRecord),
                                                                TransactionState (Block, Failed, Idle))
 import qualified Database.PostgreSQL.Pure.Internal.Data       as Data

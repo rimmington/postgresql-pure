@@ -33,6 +33,7 @@ dependencies:
 - convertible
 - bytestring
 - data-default-class
+- deepseq
 - double-conversion
 - HDBC
 - homotuple
@@ -145,6 +146,7 @@ tests:
     dependencies:
     - HUnit
     - QuickCheck
+    - either-result
     - old-time
     default-extensions:
     - Strict

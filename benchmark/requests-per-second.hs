@@ -22,7 +22,7 @@ import           Data.IORef
 import           Data.Maybe
 import           Data.Proxy
 import           Data.Scientific                              (Scientific)
-import           Data.Time                                    (Day, DiffTime, LocalTime, TimeOfDay, TimeZone, UTCTime)
+import           Data.Time                                    (Day, DiffTime, LocalTime, TimeOfDay, UTCTime)
 import           Data.Tuple.Homotuple.Only                    ()
 import           Data.Tuple.Only
 import           Options.Applicative
@@ -199,14 +199,14 @@ benchPure Config { host, database, user, password } rowsType =
               resultOids = (Pure.int4, Pure.int8, Pure.numeric, Pure.float4, Pure.float8, Pure.varchar, Pure.text, Pure.bytea, Pure.timestamp, Pure.timestamptz, Pure.date, Pure.time, Pure.timetz, Pure.interval, Pure.bool)
               psProc = Pure.parse "ps" (Pure.Query statement) (Just (Proxy, resultOids)) :: Pure.PreparedStatementProcedure 0 15
               pProc = fromJust $ Pure.bind "" Pure.BinaryFormat Pure.BinaryFormat (Pure.parameters c) (const $ fail "") () psProc :: Pure.PortalProcedure 0 15
-              eProc = Pure.execute 0 (const $ fail "") pProc :: Pure.ExecutedProcedure 0 15 (Int32, Int64, Scientific, Float, Double, ByteString, ByteString, ByteString, LocalTime, UTCTime, Day, TimeOfDay, (TimeOfDay, TimeZone), DiffTime, Bool)
+              eProc = Pure.execute 0 (const $ fail "") pProc :: Pure.ExecutedProcedure 0 15 (Int32, Int64, Scientific, Float, Double, ByteString, ByteString, ByteString, LocalTime, UTCTime, Day, TimeOfDay, Pure.TimeOfDayWithTimeZone, DiffTime, Bool)
             ((ps, _, e, _), _) <- Pure.sync c eProc
             deepseq (Pure.records e) $ pure ()
             writeIORef psRef $ Just ps
           Just ps -> do
             let
               pProc = fromJust $ Pure.bind "" Pure.BinaryFormat Pure.BinaryFormat (Pure.parameters c) (const $ fail "") () ps :: Pure.PortalProcedure 0 15
-              eProc = Pure.execute 0 (const $ fail "") pProc :: Pure.ExecutedProcedure 0 15 (Int32, Int64, Scientific, Float, Double, ByteString, ByteString, ByteString, LocalTime, UTCTime, Day, TimeOfDay, (TimeOfDay, TimeZone), DiffTime, Bool)
+              eProc = Pure.execute 0 (const $ fail "") pProc :: Pure.ExecutedProcedure 0 15 (Int32, Int64, Scientific, Float, Double, ByteString, ByteString, ByteString, LocalTime, UTCTime, Day, TimeOfDay, Pure.TimeOfDayWithTimeZone, DiffTime, Bool)
             void $ Pure.sync c eProc
     _ ->
       benchRequests ((,) <$> connect <*> newIORef Nothing) $ \(c, psRef) -> do

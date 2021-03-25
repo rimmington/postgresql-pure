@@ -1,11 +1,7 @@
 PWSH = pwsh
 
 .PHONY: build
-build: build-ghc-8.4 build-ghc-8.6 build-ghc-8.8 build-nightly
-
-.PHONY: build-ghc-8.4
-build-ghc-8.4: build-deps-ghc-8.4 src
-	stack --stack-yaml stack-ghc-8.4.yaml build --ghc-options -Werror
+build: build-ghc-8.6 build-ghc-8.8 build-ghc-8.10 build-nightly
 
 .PHONY: build-ghc-8.6
 build-ghc-8.6: build-deps-ghc-8.6 src
@@ -15,13 +11,13 @@ build-ghc-8.6: build-deps-ghc-8.6 src
 build-ghc-8.8: build-deps-ghc-8.8 src
 	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror
 
+.PHONY: build-ghc-8.10
+build-ghc-8.10: build-deps-ghc-8.10 src
+	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror
+
 .PHONY: build-nightly
 build-nightly: build-deps-nightly src
 	stack --stack-yaml stack-nightly.yaml --resolver nightly build --ghc-options -Werror
-
-.PHONY: build-deps-ghc-8.4
-build-deps-ghc-8.4: stack-ghc-8.4.yaml package.yaml
-	stack --stack-yaml stack-ghc-8.4.yaml build --only-dependencies
 
 .PHONY: build-deps-ghc-8.6
 build-deps-ghc-8.6: stack-ghc-8.6.yaml package.yaml
@@ -31,31 +27,16 @@ build-deps-ghc-8.6: stack-ghc-8.6.yaml package.yaml
 build-deps-ghc-8.8: stack-ghc-8.8.yaml package.yaml
 	stack --stack-yaml stack-ghc-8.8.yaml build --only-dependencies
 
+.PHONY: build-deps-ghc-8.10
+build-deps-ghc-8.10: stack-ghc-8.10.yaml package.yaml
+	stack --stack-yaml stack-ghc-8.10.yaml build --only-dependencies
+
 .PHONY: build-deps-nightly
 build-deps-nightly: stack-nightly.yaml package.yaml
 	stack --stack-yaml stack-nightly.yaml --resolver nightly build --only-dependencies
 
 .PHONY: test
-test: test-ghc-8.4 test-ghc-8.6 test-ghc-8.8 test-nightly
-
-.PHONY: test-ghc-8.4
-test-ghc-8.4: test-doctest-ghc-8.4 test-original-ghc-8.4 test-hdbc-postgresql-ghc-8.4 test-relational-record-ghc-8.4
-
-.PHONY: test-doctest-ghc-8.4
-test-doctest-ghc-8.4: build-ghc-8.4
-	stack --stack-yaml stack-ghc-8.4.yaml build --ghc-options -Werror postgresql-pure:test:doctest
-
-.PHONY: test-original-ghc-8.4
-test-original-ghc-8.4: build-ghc-8.4
-	stack --stack-yaml stack-ghc-8.4.yaml build --ghc-options -Werror postgresql-pure:test:original
-
-.PHONY: test-hdbc-postgresql-ghc-8.4
-test-hdbc-postgresql-ghc-8.4: build-ghc-8.4
-	stack --stack-yaml stack-ghc-8.4.yaml build --ghc-options -Werror postgresql-pure:test:hdbc-postgresql
-
-.PHONY: test-relational-record-ghc-8.4
-test-relational-record-ghc-8.4: build-ghc-8.4
-	stack --stack-yaml stack-ghc-8.4.yaml build --ghc-options -Werror postgresql-pure:test:relational-record
+test: test-ghc-8.6 test-ghc-8.8 test-ghc-8.10 test-nightly
 
 .PHONY: test-ghc-8.6
 test-ghc-8.6: test-doctest-ghc-8.6 test-original-ghc-8.6 test-hdbc-postgresql-ghc-8.6 test-relational-record-ghc-8.6
@@ -94,6 +75,25 @@ test-hdbc-postgresql-ghc-8.8: build-ghc-8.8
 .PHONY: test-relational-record-ghc-8.8
 test-relational-record-ghc-8.8: build-ghc-8.8
 	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror postgresql-pure:test:relational-record
+
+.PHONY: test-ghc-8.10
+test-ghc-8.10: test-doctest-ghc-8.10 test-original-ghc-8.10 test-hdbc-postgresql-ghc-8.10 test-relational-record-ghc-8.10
+
+.PHONY: test-doctest-ghc-8.10
+test-doctest-ghc-8.10: build-ghc-8.10
+	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:doctest
+
+.PHONY: test-original-ghc-8.10
+test-original-ghc-8.10: build-ghc-8.10
+	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:original
+
+.PHONY: test-hdbc-postgresql-ghc-8.10
+test-hdbc-postgresql-ghc-8.10: build-ghc-8.10
+	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:hdbc-postgresql
+
+.PHONY: test-relational-record-ghc-8.10
+test-relational-record-ghc-8.10: build-ghc-8.10
+	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:relational-record
 
 .PHONY: test-nightly
 test-nightly: test-doctest-nightly test-original-nightly test-hdbc-postgresql-nightly test-relational-record-nightly
@@ -158,12 +158,12 @@ targets:
 
 .PHONY: clean
 clean:
-	stack --stack-yaml stack-ghc-8.4.yaml clean
 	stack --stack-yaml stack-ghc-8.6.yaml clean
 	stack --stack-yaml stack-ghc-8.8.yaml clean
+	stack --stack-yaml stack-ghc-8.10.yaml clean
 
 .PHONY: clean-full
 clean-full:
-	stack --stack-yaml stack-ghc-8.4.yaml clean --full
 	stack --stack-yaml stack-ghc-8.6.yaml clean --full
 	stack --stack-yaml stack-ghc-8.8.yaml clean --full
+	stack --stack-yaml stack-ghc-8.10.yaml clean --full

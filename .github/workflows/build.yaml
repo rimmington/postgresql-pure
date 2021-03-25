@@ -10,37 +10,37 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            ghc: ghc-8.4
-            continue-on-error: false
-          - os: windows-latest
             ghc: ghc-8.6
             continue-on-error: false
           - os: windows-latest
             ghc: ghc-8.8
-            continue-on-error: true
+            continue-on-error: false
+          - os: windows-latest
+            ghc: ghc-8.10
+            continue-on-error: false
           - os: windows-latest
             ghc: nightly
             continue-on-error: true
           - os: macos-latest
-            ghc: ghc-8.4
-            continue-on-error: false
-          - os: macos-latest
             ghc: ghc-8.6
             continue-on-error: false
           - os: macos-latest
             ghc: ghc-8.8
+            continue-on-error: false
+          - os: macos-latest
+            ghc: ghc-8.10
             continue-on-error: false
           - os: macos-latest
             ghc: nightly
             continue-on-error: true
           - os: ubuntu-latest
-            ghc: ghc-8.4
-            continue-on-error: false
-          - os: ubuntu-latest
             ghc: ghc-8.6
             continue-on-error: false
           - os: ubuntu-latest
             ghc: ghc-8.8
+            continue-on-error: false
+          - os: ubuntu-latest
+            ghc: ghc-8.10
             continue-on-error: false
           - os: ubuntu-latest
             ghc: nightly

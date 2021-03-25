@@ -8,7 +8,7 @@ jobs:
   test:
     strategy:
       matrix:
-        ghc: [ghc-8.4, ghc-8.6, ghc-8.8]
+        ghc: [ghc-8.6, ghc-8.8, ghc-8.10]
         test: [doctest, original, hdbc-postgresql, relational-record]
         continue-on-error: [false]
         include:
@@ -45,16 +45,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: sudo apt-get install -y postgresql-client-12
-      - run: echo '::set-env name=PGHOST::localhost'
-      - run: echo '::set-env name=PGPORT::5432'
-      - run: echo '::set-env name=PGDATABASE::postgres'
-      - run: echo '::set-env name=PGUSER::postgres'
-      - run: echo '::set-env name=PGPASSWORD::password'
-      - run: echo '::set-env name=PURE_HOST::localhost'
-      - run: echo '::set-env name=PURE_PORT::5432'
-      - run: echo '::set-env name=PURE_DATABASE::postgres'
-      - run: echo '::set-env name=PURE_USER::postgres'
-      - run: echo '::set-env name=PURE_PASSWORD::password'
+      - run: echo 'PGHOST=localhost' >> $GITHUB_ENV
+      - run: echo 'PGPORT=5432' >> $GITHUB_ENV
+      - run: echo 'PGDATABASE=postgres' >> $GITHUB_ENV
+      - run: echo 'PGUSER=postgres' >> $GITHUB_ENV
+      - run: echo 'PGPASSWORD=password' >> $GITHUB_ENV
+      - run: echo 'PURE_HOST=localhost' >> $GITHUB_ENV
+      - run: echo 'PURE_PORT=5432' >> $GITHUB_ENV
+      - run: echo 'PURE_DATABASE=postgres' >> $GITHUB_ENV
+      - run: echo 'PURE_USER=postgres' >> $GITHUB_ENV
+      - run: echo 'PURE_PASSWORD=password' >> $GITHUB_ENV
       - run: |
           pg_isready
           psql < test-asset/create-tables.sql
