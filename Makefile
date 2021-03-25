@@ -1,131 +1,76 @@
 PWSH = pwsh
 
 .PHONY: build
-build: build-ghc-8.6 build-ghc-8.8 build-ghc-8.10 build-nightly
+build: build-deps
+	cabal build
 
-.PHONY: build-ghc-8.6
-build-ghc-8.6: build-deps-ghc-8.6 src
-	stack --stack-yaml stack-ghc-8.6.yaml build --ghc-options -Werror
-
-.PHONY: build-ghc-8.8
-build-ghc-8.8: build-deps-ghc-8.8 src
-	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror
-
-.PHONY: build-ghc-8.10
-build-ghc-8.10: build-deps-ghc-8.10 src
-	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror
-
-.PHONY: build-nightly
-build-nightly: build-deps-nightly src
-	stack --stack-yaml stack-nightly.yaml --resolver nightly build --ghc-options -Werror
-
-.PHONY: build-deps-ghc-8.6
-build-deps-ghc-8.6: stack-ghc-8.6.yaml package.yaml
-	stack --stack-yaml stack-ghc-8.6.yaml build --only-dependencies
-
-.PHONY: build-deps-ghc-8.8
-build-deps-ghc-8.8: stack-ghc-8.8.yaml package.yaml
-	stack --stack-yaml stack-ghc-8.8.yaml build --only-dependencies
-
-.PHONY: build-deps-ghc-8.10
-build-deps-ghc-8.10: stack-ghc-8.10.yaml package.yaml
-	stack --stack-yaml stack-ghc-8.10.yaml build --only-dependencies
-
-.PHONY: build-deps-nightly
-build-deps-nightly: stack-nightly.yaml package.yaml
-	stack --stack-yaml stack-nightly.yaml --resolver nightly build --only-dependencies
+.PHONY: build-deps
+build-deps:
+	cabal build --only-dependencies
 
 .PHONY: test
-test: test-ghc-8.6 test-ghc-8.8 test-ghc-8.10 test-nightly
+test: test-doctest test-original test-hdbc-postgresql test-relational-record
 
-.PHONY: test-ghc-8.6
-test-ghc-8.6: test-doctest-ghc-8.6 test-original-ghc-8.6 test-hdbc-postgresql-ghc-8.6 test-relational-record-ghc-8.6
+.PHONY: build-doctest
+build-doctest: build
+	cabal build postgresql-pure:test:doctest
 
-.PHONY: test-doctest-ghc-8.6
-test-doctest-ghc-8.6: build-ghc-8.6
-	stack --stack-yaml stack-ghc-8.6.yaml build --ghc-options -Werror postgresql-pure:test:doctest
+.PHONY: test-doctest
+test-doctest: build-doctest
+	cabal test postgresql-pure:test:doctest
 
-.PHONY: test-original-ghc-8.6
-test-original-ghc-8.6: build-ghc-8.6
-	stack --stack-yaml stack-ghc-8.6.yaml build --ghc-options -Werror postgresql-pure:test:original
+.PHONY: build-original
+build-original: build
+	cabal build postgresql-pure:test:original
 
-.PHONY: test-hdbc-postgresql-ghc-8.6
-test-hdbc-postgresql-ghc-8.6: build-ghc-8.6
-	stack --stack-yaml stack-ghc-8.6.yaml build --ghc-options -Werror postgresql-pure:test:hdbc-postgresql
+.PHONY: test-original
+test-original: build-original
+	cabal test postgresql-pure:test:original
 
-.PHONY: test-relational-record-ghc-8.6
-test-relational-record-ghc-8.6: build-ghc-8.6
-	stack --stack-yaml stack-ghc-8.6.yaml build --ghc-options -Werror postgresql-pure:test:relational-record
+.PHONY: build-hdbc-postgresql
+build-hdbc-postgresql: build
+	cabal build postgresql-pure:test:hdbc-postgresql
 
-.PHONY: test-ghc-8.8
-test-ghc-8.8: test-doctest-ghc-8.8 test-original-ghc-8.8 test-hdbc-postgresql-ghc-8.8 test-relational-record-ghc-8.8
+.PHONY: test-hdbc-postgresql
+test-hdbc-postgresql: build-hdbc-postgresql
+	cabal test postgresql-pure:test:hdbc-postgresql
 
-.PHONY: test-doctest-ghc-8.8
-test-doctest-ghc-8.8: build-ghc-8.8
-	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror postgresql-pure:test:doctest
+.PHONY: build-relational-record
+build-relational-record: build
+	cabal build postgresql-pure:test:relational-record
 
-.PHONY: test-original-ghc-8.8
-test-original-ghc-8.8: build-ghc-8.8
-	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror postgresql-pure:test:original
+.PHONY: test-relational-record
+test-relational-record: build-relational-record
+	cabal test postgresql-pure:test:relational-record
 
-.PHONY: test-hdbc-postgresql-ghc-8.8
-test-hdbc-postgresql-ghc-8.8: build-ghc-8.8
-	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror postgresql-pure:test:hdbc-postgresql
+.PHONY: build-requests-per-second
+build-requests-per-second: build
+	cabal build postgresql-pure:bench:requests-per-second
 
-.PHONY: test-relational-record-ghc-8.8
-test-relational-record-ghc-8.8: build-ghc-8.8
-	stack --stack-yaml stack-ghc-8.8.yaml build --ghc-options -Werror postgresql-pure:test:relational-record
+.PHONY: bench-requests-per-second
+bench-requests-per-second: build-requests-per-second
+	cabal bench postgresql-pure:bench:requests-per-second
 
-.PHONY: test-ghc-8.10
-test-ghc-8.10: test-doctest-ghc-8.10 test-original-ghc-8.10 test-hdbc-postgresql-ghc-8.10 test-relational-record-ghc-8.10
+.PHONY: build-requests-per-second-constant
+build-requests-per-second-constant: build
+	cabal build postgresql-pure:bench:requests-per-second-constant
 
-.PHONY: test-doctest-ghc-8.10
-test-doctest-ghc-8.10: build-ghc-8.10
-	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:doctest
-
-.PHONY: test-original-ghc-8.10
-test-original-ghc-8.10: build-ghc-8.10
-	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:original
-
-.PHONY: test-hdbc-postgresql-ghc-8.10
-test-hdbc-postgresql-ghc-8.10: build-ghc-8.10
-	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:hdbc-postgresql
-
-.PHONY: test-relational-record-ghc-8.10
-test-relational-record-ghc-8.10: build-ghc-8.10
-	stack --stack-yaml stack-ghc-8.10.yaml build --ghc-options -Werror postgresql-pure:test:relational-record
-
-.PHONY: test-nightly
-test-nightly: test-doctest-nightly test-original-nightly test-hdbc-postgresql-nightly test-relational-record-nightly
-
-.PHONY: test-doctest-nightly
-test-doctest-nightly: build-nightly
-	stack --stack-yaml stack-nightly.yaml --resolver nightly build --ghc-options -Werror postgresql-pure:test:doctest
-
-.PHONY: test-original-nightly
-test-original-nightly: build-nightly
-	stack --stack-yaml stack-nightly.yaml --resolver nightly build --ghc-options -Werror postgresql-pure:test:original
-
-.PHONY: test-hdbc-postgresql-nightly
-test-hdbc-postgresql-nightly: build-nightly
-	stack --stack-yaml stack-nightly.yaml --resolver nightly build --ghc-options -Werror postgresql-pure:test:hdbc-postgresql
-
-.PHONY: test-relational-record-nightly
-test-relational-record-nightly: build-nightly
-	stack --stack-yaml stack-nightly.yaml --resolver nightly build --ghc-options -Werror postgresql-pure:test:relational-record
+.PHONY: bench-requests-per-second-constant
+bench-requests-per-second-constant: build-requests-per-second-constant
+	cabal bench postgresql-pure:bench:requests-per-second-constant
 
 .PHONY: format
 format:
 	$(PWSH) -Command "& { Get-ChildItem -Filter '*.hs' -Recurse src, test, test-doctest, test-relational-record, benchmark | Where-Object { $$_.Directory -notlike '*\src\Database\PostgreSQL\Simple\Time\Internal' } | ForEach-Object { stack exec -- stylish-haskell -i $$_.FullName } }"
-	stack exec -- stylish-haskell -i Setup.hs
+	stylish-haskell -i Setup.hs
 
 .PHONY: lint
 lint:
-	stack exec -- hlint\
+	hlint\
 		src/Database/PostgreSQL/Pure.hs\
 		src/Database/PostgreSQL/Pure\
 		src/Database/HDBC\
-		test\
+		test-original\
 		test-doctest\
 		test-relational-record\
 		benchmark
@@ -158,12 +103,5 @@ targets:
 
 .PHONY: clean
 clean:
-	stack --stack-yaml stack-ghc-8.6.yaml clean
-	stack --stack-yaml stack-ghc-8.8.yaml clean
-	stack --stack-yaml stack-ghc-8.10.yaml clean
-
-.PHONY: clean-full
-clean-full:
-	stack --stack-yaml stack-ghc-8.6.yaml clean --full
-	stack --stack-yaml stack-ghc-8.8.yaml clean --full
-	stack --stack-yaml stack-ghc-8.10.yaml clean --full
+	cabal clean
+	$(PWSH) -Command "& { Remove-Item src\Database\PostgreSQL\Pure\Internal\Builder.hs, src\Database\PostgreSQL\Pure\Internal\Parser.hs, src\Database\PostgreSQL\Pure\Internal\Length.hs }"
