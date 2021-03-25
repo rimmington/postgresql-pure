@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE NamedFieldPuns    #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PackageImports    #-} -- for doctest
 
 module Database.PostgreSQL.Pure.Internal.Connection
   ( connect
@@ -37,7 +38,7 @@ import qualified Network.Socket                              as NS
 #ifdef PURE_MD5
 import qualified Data.Digest.Pure.MD5                        as MD5
 #else
-import qualified Crypto.Hash.MD5                             as MD5
+import qualified "cryptohash-md5" Crypto.Hash.MD5            as MD5
 #endif
 
 -- | Bracket function for a connection.
