@@ -163,6 +163,7 @@ test-suite original
                  postgresql-pure,
                  safe-exceptions,
                  utf8-string
+  build-tool-depends: hspec-discover:hspec-discover
 
 test-suite relational-record
   import: common
