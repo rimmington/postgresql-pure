@@ -4,7 +4,7 @@
 
 ## Copyright
 
-2019 IIJ Innovation Institute Inc.
+2021 Kazuki Okamoto (岡本和樹), 2019 IIJ Innovation Institute Inc.
 
 And some files are licensed by followings. See the LICENSE file for details.
 
