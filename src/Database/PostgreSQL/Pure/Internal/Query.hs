@@ -74,10 +74,10 @@ import           Control.Monad.Fail                          (MonadFail)
 -- | To get the procedure to build the message of parsing SQL query and to parse its response.
 parse
   :: PreparedStatementName -- ^ A new name of prepared statement.
-  -> Query -- ^ SQL whose placeoholder style is dollar style.
+  -> Query -- ^ SQL whose placeholder style is dollar style.
   -> Either (Word, Word) ([Oid], [Oid]) -- ^ A pair of the number of columns of the parameter and the result,
                                         -- or a pair of the list of OIDs of the parameter and the result.
-                                        -- On 'Left' an additional pair of a request and a resposne is necessary.
+                                        -- On 'Left' an additional pair of a request and a response is necessary.
   -> PreparedStatementProcedure
 parse name query (Left (parameterLength, resultLength)) = parse' name query parameterLength resultLength Nothing
 parse name query (Right oids@(parameterOids, resultOids)) = parse' name query (genericLength parameterOids) (genericLength resultOids) (Just oids)

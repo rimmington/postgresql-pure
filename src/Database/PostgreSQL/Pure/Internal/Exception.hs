@@ -77,9 +77,9 @@ data InternalException
 
 instance E.Exception InternalException
 
-internalExcepionToExposedException :: InternalException -> Exception
-internalExcepionToExposedException e@InternalResponseParsingFailed {} = Exception $ ResponseParsingFailed $ displayException e
-internalExcepionToExposedException (InternalErrorResponse (ErrorFields fields) transactionState _) =
+internalExceptionToExposedException :: InternalException -> Exception
+internalExceptionToExposedException e@InternalResponseParsingFailed {} = Exception $ ResponseParsingFailed $ displayException e
+internalExceptionToExposedException (InternalErrorResponse (ErrorFields fields) transactionState _) =
   Exception ErrorResponse { severity, code, message, transactionState }
   where
     (severity, code, message) = map3 BSS.fromShort $ foldr go ("", "", "") fields
@@ -88,14 +88,14 @@ internalExcepionToExposedException (InternalErrorResponse (ErrorFields fields) t
     go ('M', largeM) (largeS, largeC, _) = (largeS, largeC, largeM)
     go _ a                               = a
     map3 f (v1, v2, v3) = (f v1, f v2, f v3)
-internalExcepionToExposedException e@InternalExtraData {} = Exception $ ResponseParsingFailed $ displayException e
+internalExceptionToExposedException e@InternalExtraData {} = Exception $ ResponseParsingFailed $ displayException e
 
 convert :: IO a -> IO a
 convert a = do
   r <- try a
   case r of
     Right r -> pure r
-    Left e  -> throw $ internalExcepionToExposedException e
+    Left e  -> throw $ internalExceptionToExposedException e
 
 cantReachHere :: HasCallStack => a
 cantReachHere = error "can't reach here"

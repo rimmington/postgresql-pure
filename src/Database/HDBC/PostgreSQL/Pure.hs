@@ -154,7 +154,7 @@ data Connection =
   Connection
     { connection                    :: Pure.Connection
     , statementCounter              :: IORef Word
-    , unnecessaryPreparedStatemtnts :: MVar [Pure.PreparedStatement] -- To accumulate unnecessary prepared statements
+    , unnecessaryPreparedStatements :: MVar [Pure.PreparedStatement] -- To accumulate unnecessary prepared statements
                                                                      -- to dispose them when some requests come,
                                                                      -- because HDBC doesn't have a interface to close statements.
     , config                        :: Config
@@ -180,17 +180,17 @@ instance IConnection Connection where
 
   commit hc@Connection { connection } =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       void $ Pure.sync connection (Pure.commit, Pure.begin)
 
   rollback hc@Connection { connection } =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       void $ Pure.sync connection (Pure.rollback, Pure.begin)
 
   run hc@Connection { connection = connection@Pure.Connection { parameters }, config = Config { encodeString, decodeString } } query values =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       charCode <- lookupClientEncoding parameters
       let
         encode = encodeString charCode
@@ -210,7 +210,7 @@ instance IConnection Connection where
 
   runRaw hc@Connection { connection = connection@Pure.Connection { parameters }, config = Config { encodeString, decodeString } } query =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       charCode <- lookupClientEncoding parameters
       let
         encode = encodeString charCode
@@ -220,9 +220,9 @@ instance IConnection Connection where
         ps <- Pure.flush connection $ Pure.parse "" (Pure.Query q) (Left (0, 0)) -- footnote [1]
         Pure.flush connection $ Pure.execute @_ @() 0 decode $ forceBind $ Pure.bind "" Pure.TextFormat Pure.TextFormat parameters encode ([] :: [SqlValue]) ps
 
-  prepare hc@Connection { connection = connection@Pure.Connection { parameters }, statementCounter, unnecessaryPreparedStatemtnts, config = Config { encodeString, decodeString } } query =
+  prepare hc@Connection { connection = connection@Pure.Connection { parameters }, statementCounter, unnecessaryPreparedStatements, config = Config { encodeString, decodeString } } query =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       count <- incrementCounter statementCounter
       portalCounter <- newIORef 0
       charCode <- lookupClientEncoding parameters
@@ -247,7 +247,7 @@ instance IConnection Connection where
         execute :: [SqlValue] -> IO Integer
         execute values =
           convertException $ do
-            closeUnnecessaryPreparedStatemtnts hc
+            closeUnnecessaryPreparedStatements hc
             finish'
             count <- incrementCounter portalCounter
             countBS <- encodeIO $ show count
@@ -269,7 +269,7 @@ instance IConnection Connection where
         executeMany :: [[SqlValue]] -> IO ()
         executeMany valuess =
           convertException $ do
-            closeUnnecessaryPreparedStatemtnts hc
+            closeUnnecessaryPreparedStatements hc
             finish'
             eProcs <-
               for valuess $ \values -> do
@@ -292,7 +292,7 @@ instance IConnection Connection where
         finish :: IO ()
         finish =
           convertException $ do
-            closeUnnecessaryPreparedStatemtnts hc
+            closeUnnecessaryPreparedStatements hc
             finish'
             keepPreparedStatementAlive
             writeIORef portalsRef []
@@ -305,7 +305,7 @@ instance IConnection Connection where
         fetchRow :: IO (Maybe [SqlValue])
         fetchRow =
           convertException $ do
-            closeUnnecessaryPreparedStatemtnts hc
+            closeUnnecessaryPreparedStatements hc
             ps <- readIORef portalsRef
             case ps of
               (Just r, p):ps -> do
@@ -327,7 +327,7 @@ instance IConnection Connection where
         getColumnNames :: IO [String]
         getColumnNames =
           convertException $ do
-            closeUnnecessaryPreparedStatemtnts hc
+            closeUnnecessaryPreparedStatements hc
             sequence $ decodeIO . getField @"name" <$> Pure.resultInfos preparedStatement
 
         originalQuery :: String
@@ -336,7 +336,7 @@ instance IConnection Connection where
         describeResult :: IO [(String, SqlColDesc)]
         describeResult =
           convertException $ do
-            closeUnnecessaryPreparedStatemtnts hc
+            closeUnnecessaryPreparedStatements hc
             let
               columnInfos = Pure.resultInfos preparedStatement
               psProc = Pure.parse "attr" "SELECT attnotnull FROM pg_attribute WHERE attrelid = $1 AND attnum = $2" (Right ([Oid.oid, Oid.int2], [Oid.bool]))
@@ -382,12 +382,12 @@ instance IConnection Connection where
             }
 
       -- set up a finaliser
-      void $ mkWeakIORef alive $ modifyMVar_ unnecessaryPreparedStatemtnts $ pure . (preparedStatement:)
+      void $ mkWeakIORef alive $ modifyMVar_ unnecessaryPreparedStatements $ pure . (preparedStatement:)
       pure statement
 
   clone hc@Connection { config } =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       connect config
 
   hdbcDriverName _ = "postgresql"
@@ -408,7 +408,7 @@ instance IConnection Connection where
 
   getTables hc@Connection { connection = connection@Pure.Connection { parameters }, config = Config { encodeString, decodeString } } =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       charCode <- lookupClientEncoding parameters
       let
         encode = encodeString charCode
@@ -421,7 +421,7 @@ instance IConnection Connection where
 
   describeTable hc@Connection { connection = connection@Pure.Connection { parameters }, config = Config { encodeString, decodeString } } tableName =
     convertException $ do
-      closeUnnecessaryPreparedStatemtnts hc
+      closeUnnecessaryPreparedStatements hc
       charCode <- lookupClientEncoding parameters
       let
         encode = encodeString charCode
@@ -451,7 +451,7 @@ instance IConnection Connection where
 begin :: Connection -> IO ()
 begin hc@Connection { connection } =
   convertException $ do
-    closeUnnecessaryPreparedStatemtnts hc
+    closeUnnecessaryPreparedStatements hc
     void $ Pure.sync connection Pure.begin
 
 columnSize :: Pure.Oid -> Pure.TypeLength -> Pure.TypeModifier -> (Maybe Int, Maybe Int)
@@ -471,9 +471,9 @@ incrementCounter ref = do
   writeIORef ref (n + 1)
   pure n
 
-closeUnnecessaryPreparedStatemtnts :: Connection -> IO ()
-closeUnnecessaryPreparedStatemtnts Connection { connection, unnecessaryPreparedStatemtnts } =
-  modifyMVar_ unnecessaryPreparedStatemtnts $ \pss -> do
+closeUnnecessaryPreparedStatements :: Connection -> IO ()
+closeUnnecessaryPreparedStatements Connection { connection, unnecessaryPreparedStatements } =
+  modifyMVar_ unnecessaryPreparedStatements $ \pss -> do
     unless (null pss) $ void $ Pure.sync connection $ Pure.close <$> pss
     pure []
 
