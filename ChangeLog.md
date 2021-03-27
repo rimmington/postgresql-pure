@@ -1,5 +1,12 @@
 # Changelog for postgresql-pure
 
+## 0.2.3.0
+
+2021.03.27
+
+- Add GHC 8.10 support, remove GHC 8.4 support.
+- Expose `SqlIdentifier` and `TimeOfDayWithTimeZone`.
+
 ## 0.2.2.0
 
 2020.07.19
