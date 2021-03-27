@@ -7,8 +7,6 @@
 {-# LANGUAGE DuplicateRecordFields      #-}
 {-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE KindSignatures             #-}
-{-# LANGUAGE NamedFieldPuns             #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE PatternSynonyms            #-}
 {-# LANGUAGE TypeFamilies               #-}
@@ -469,7 +467,7 @@ class FromRecord a where
       is -> fail $ "length mismatch: too many: actual: " <> show (length is)
 
 class GFromRecord f where
-  gFromRecord :: StringDecoder -> [ColumnInfo] -> AP.Parser ((f p), [ColumnInfo])
+  gFromRecord :: StringDecoder -> [ColumnInfo] -> AP.Parser (f p, [ColumnInfo])
 
 -- | This means that @a@ can be encoded to a field.
 class ToField a where

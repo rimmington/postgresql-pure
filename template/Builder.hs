@@ -6,7 +6,6 @@
 {-# LANGUAGE TupleSections        #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
-{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 {-# OPTIONS_GHC -Wno-orphans #-}
@@ -155,7 +154,7 @@ bind (PortalName portalName) (PreparedStatementName preparedStatementName) param
         )
       + 2 -- the number of parameters
       + 4 * length parameters -- length field of each parameters
-      + sum ((\p -> case p of Just bs -> BS.length bs; Nothing -> 0) <$> parameters) -- parameters themselves
+      + sum (maybe 0 BS.length <$> parameters) -- parameters themselves
       + 2 -- the number of result format codes
       + ( case resultFormatCodes of -- format codes
             BindResultFormatCodesNothing    -> 0

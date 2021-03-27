@@ -15,6 +15,7 @@ import           Database.PostgreSQL.Pure.Internal.Data (ErrorFields (ErrorField
 
 import           Control.Exception.Safe                 (displayException, fromException, throw, toException, try)
 import qualified Control.Exception.Safe                 as E
+import           Control.Monad                          ((<=<))
 import qualified Data.ByteString                        as BS
 import qualified Data.ByteString.Short                  as BSS
 import qualified Data.ByteString.UTF8                   as BSU
@@ -43,7 +44,7 @@ data ErrorResponse =
 
 instance E.Exception ErrorResponse where
   toException = toException . Exception
-  fromException = ((\(Exception e) -> cast e) =<<) . fromException
+  fromException = (\(Exception e) -> cast e) <=< fromException
   displayException = pretty
 
 instance Pretty ErrorResponse where
@@ -63,7 +64,7 @@ newtype ResponseParsingFailed =
 
 instance E.Exception ResponseParsingFailed where
   toException = toException . Exception
-  fromException = ((\(Exception e) -> cast e) =<<) . fromException
+  fromException = (\(Exception e) -> cast e) <=< fromException
   displayException = pretty
 
 instance Pretty ResponseParsingFailed where

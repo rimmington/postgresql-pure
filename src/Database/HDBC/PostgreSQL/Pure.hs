@@ -4,10 +4,8 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NamedFieldPuns        #-}
-{-# LANGUAGE OverloadedLabels      #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE TypeApplications      #-}
-{-# LANGUAGE TypeSynonymInstances  #-}
 
 {-# OPTIONS_GHC -Wno-orphans #-}
 
@@ -49,7 +47,7 @@ import           Database.HDBC.Statement                          (SqlValue (Sql
 import           Control.Concurrent                               (MVar, modifyMVar_, newMVar)
 import           Control.Exception.Safe                           (Exception (displayException, fromException, toException),
                                                                    impureThrow, try)
-import           Control.Monad                                    (unless, void)
+import           Control.Monad                                    (unless, void, (<=<))
 import qualified Data.ByteString                                  as BS
 import qualified Data.ByteString.Builder                          as BSB
 import qualified Data.ByteString.Builder.Prim                     as BSBP
@@ -66,8 +64,8 @@ import           Data.Maybe                                       (fromMaybe)
 import           Data.Scientific                                  (FPFormat (Exponent), Scientific, formatScientific,
                                                                    fromRationalRepetend)
 import           Data.String                                      (IsString (fromString))
-import           Data.Time                                        (DiffTime, NominalDiffTime, zonedTimeToUTC)
-import           Data.Time                                        (TimeOfDay, TimeZone, utc)
+import           Data.Time                                        (DiffTime, NominalDiffTime, TimeOfDay, TimeZone, utc,
+                                                                   zonedTimeToUTC)
 import           Data.Traversable                                 (for)
 import           Data.Tuple.Only                                  (Only (Only))
 import           Data.Typeable                                    (Typeable, cast)
@@ -488,7 +486,7 @@ newtype RequestBuildingFailed = RequestBuildingFailed { message :: String } deri
 
 instance Exception RequestBuildingFailed where
   toException = toException . Pure.Exception
-  fromException = ((\(Pure.Exception e) -> cast e) =<<) . fromException
+  fromException = (\(Pure.Exception e) -> cast e) <=< fromException
 
 instance Pure.FromField SqlValue where
   fromField _ _ Nothing = pure SqlNull
