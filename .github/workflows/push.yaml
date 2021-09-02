@@ -8,47 +8,10 @@ jobs:
   build:
     strategy:
       matrix:
-        include:
-          - os: windows-latest
-            ghc: '8.6'
-            continue-on-error: false
-          - os: windows-latest
-            ghc: '8.8'
-            continue-on-error: false
-          - os: windows-latest
-            ghc: '8.10'
-            continue-on-error: false
-          - os: windows-latest
-            ghc: latest
-            continue-on-error: true
-          - os: macos-latest
-            ghc: '8.6'
-            continue-on-error: false
-          - os: macos-latest
-            ghc: '8.8'
-            continue-on-error: false
-          - os: macos-latest
-            ghc: '8.10'
-            continue-on-error: false
-          - os: macos-latest
-            ghc: latest
-            continue-on-error: true
-          - os: ubuntu-latest
-            ghc: '8.6'
-            continue-on-error: false
-          - os: ubuntu-latest
-            ghc: '8.8'
-            continue-on-error: false
-          - os: ubuntu-latest
-            ghc: '8.10'
-            continue-on-error: false
-          - os: ubuntu-latest
-            ghc: latest
-            continue-on-error: true
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        ghc: ['8.8', '8.10', '9.0']
 
     runs-on: ${{ matrix.os }}
-
-    continue-on-error: ${{ matrix.continue-on-error }}
 
     timeout-minutes: 60
 
