@@ -10,10 +10,14 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         ghc: ['8.8', '8.10', '9.0']
+        exclude:
+          # It takes too long time. Why?
+          - os: macos-latest
+            ghc: '8.10'
 
     runs-on: ${{ matrix.os }}
 
-    # timeout-minutes: 120
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v2
