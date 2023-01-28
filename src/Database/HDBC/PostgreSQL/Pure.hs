@@ -571,19 +571,20 @@ resultCount e =
     case e of
       Pure.ExecuteComplete tag ->
         case tag of
-          Pure.InsertTag _ n  -> n
-          Pure.DeleteTag n    -> n
-          Pure.UpdateTag n    -> n
-          Pure.SelectTag _    -> 0
-          Pure.MoveTag n      -> n
-          Pure.FetchTag n     -> n
-          Pure.CopyTag n      -> n
-          Pure.CreateTableTag -> 0
-          Pure.DropTableTag   -> 0
-          Pure.BeginTag       -> 0
-          Pure.CommitTag      -> 0
-          Pure.RollbackTag    -> 0
-          Pure.SetTag         -> 0
+          Pure.InsertTag _ n       -> n
+          Pure.DeleteTag n         -> n
+          Pure.UpdateTag n         -> n
+          Pure.SelectTag _         -> 0
+          Pure.MoveTag n           -> n
+          Pure.FetchTag n          -> n
+          Pure.CopyTag n           -> n
+          Pure.CreateTableTag      -> 0
+          Pure.DropTableTag        -> 0
+          Pure.BeginTag            -> 0
+          Pure.StartTransactionTag -> 0
+          Pure.CommitTag           -> 0
+          Pure.RollbackTag         -> 0
+          Pure.SetTag              -> 0
       Pure.ExecuteEmptyQuery -> 0
       Pure.ExecuteSuspended -> 0
 

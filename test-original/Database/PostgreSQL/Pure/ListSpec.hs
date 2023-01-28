@@ -243,6 +243,32 @@ spec = do
                                 result e `shouldBe` ExecuteComplete CommitTag
                                 records e `shouldBe` []
 
+                              it "START TRANSACTION/ROLLBACK" $ \conn -> do
+                                let
+                                  ps = parse "" "START TRANSACTION" (Right ([], []))
+                                  e = execute @_ @() 1 (pure . BSU.toString) $ forceRight $ bind "" BinaryFormat BinaryFormat (parameters conn) (pure . BSU.fromString) () ps
+                                ((_, _, e, _), ts) <- sync conn e
+                                ts `shouldBe` Block
+                                result e `shouldBe` ExecuteComplete StartTransactionTag
+                                records e `shouldBe` []
+                                ((_, _, e, _), ts) <- sync conn rollback
+                                ts `shouldBe` Idle
+                                result e `shouldBe` ExecuteComplete RollbackTag
+                                records e `shouldBe` []
+
+                              it "START TRANSACTION/COMMIT" $ \conn -> do
+                                let
+                                  ps = parse "" "START TRANSACTION" (Right ([], []))
+                                  e = execute @_ @() 1 (pure . BSU.toString) $ forceRight $ bind "" BinaryFormat BinaryFormat (parameters conn) (pure . BSU.fromString) () ps
+                                ((_, _, e, _), ts) <- sync conn e
+                                ts `shouldBe` Block
+                                result e `shouldBe` ExecuteComplete StartTransactionTag
+                                records e `shouldBe` []
+                                ((_, _, e, _), ts) <- sync conn commit
+                                ts `shouldBe` Idle
+                                result e `shouldBe` ExecuteComplete CommitTag
+                                records e `shouldBe` []
+
                             describe "invalid SQL" $ do
                               it "parse sync" $ \conn -> do
                                 let

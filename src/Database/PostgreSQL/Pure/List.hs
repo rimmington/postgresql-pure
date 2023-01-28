@@ -113,7 +113,7 @@ module Database.PostgreSQL.Pure.List
 import           Database.PostgreSQL.Pure.Internal.Connection (connect, disconnect, withConnection)
 import           Database.PostgreSQL.Pure.Internal.Data       (Address (AddressNotResolved, AddressResolved),
                                                                BackendParameters, ColumnInfo,
-                                                               CommandTag (BeginTag, CommitTag, CopyTag, CreateTableTag, DeleteTag, DropTableTag, FetchTag, InsertTag, MoveTag, RollbackTag, SelectTag, UpdateTag),
+                                                               CommandTag (BeginTag, CommitTag, CopyTag, CreateTableTag, DeleteTag, DropTableTag, FetchTag, InsertTag, MoveTag, RollbackTag, SelectTag, StartTransactionTag, UpdateTag),
                                                                Config (Config, address, database, password, receptionBufferSize, sendingBufferSize, user),
                                                                Connection (config, parameters, pid),
                                                                ExecuteResult (ExecuteComplete, ExecuteEmptyQuery, ExecuteSuspended),

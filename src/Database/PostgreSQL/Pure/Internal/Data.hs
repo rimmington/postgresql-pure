@@ -214,6 +214,7 @@ data CommandTag
   | CreateTableTag
   | DropTableTag
   | BeginTag
+  | StartTransactionTag
   | CommitTag
   | RollbackTag
   | SetTag
@@ -542,6 +543,7 @@ instance Pretty CommandComplete where
   pretty (CommandComplete CreateTableTag) = "command complete:\n\ttag: create table"
   pretty (CommandComplete DropTableTag) = "command complete:\n\ttag: drop table"
   pretty (CommandComplete BeginTag) = "command complete:\n\ttag: begin"
+  pretty (CommandComplete StartTransactionTag) = "command complete:\n\ttag: start transaction"
   pretty (CommandComplete CommitTag) = "command complete:\n\ttag: commit"
   pretty (CommandComplete RollbackTag) = "command complete:\n\ttag: rollback"
   pretty (CommandComplete SetTag) = "command complete:\n\ttag: set"
