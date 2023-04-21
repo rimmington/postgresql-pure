@@ -133,6 +133,21 @@ spec = do
                       result e1 `shouldBe` ExecuteComplete DropTableTag
                       records e1 `shouldBe` ([] :: [()])
 
+                  describe "ALTER TABLE" $ do
+                    it "works" $ \conn -> do
+                      let
+                        e0 = execute 0 (pure . BSU.toString) $ forceRight $ bind "" BinaryFormat BinaryFormat (parameters conn) (pure . BSU.fromString) () $ parse "" "CREATE TABLE test (value INT NOT NULL)" (Right ([], []))
+                        e1 = execute 0 (pure . BSU.toString) $ forceRight $ bind "" BinaryFormat BinaryFormat (parameters conn) (pure . BSU.fromString) () $ parse "" "ALTER TABLE test ADD UNIQUE (value)" (Right ([], []))
+                        e2 = execute 0 (pure . BSU.toString) $ forceRight $ bind "" BinaryFormat BinaryFormat (parameters conn) (pure . BSU.fromString) () $ parse "" "DROP TABLE IF EXISTS test" (Right ([], []))
+                      (((_, _, e0, _), (_, _, e1, _), (_, _, e2, _)), ts) <- sync conn (e0, e1, e2)
+                      ts `shouldBe` Idle
+                      result e0 `shouldBe` ExecuteComplete CreateTableTag
+                      records e0 `shouldBe` ([] :: [()])
+                      result e1 `shouldBe` ExecuteComplete AlterTableTag
+                      records e1 `shouldBe` ([] :: [()])
+                      result e2 `shouldBe` ExecuteComplete DropTableTag
+                      records e2 `shouldBe` ([] :: [()])
+
                   beforeWith
                     ( \conn -> do
                          let

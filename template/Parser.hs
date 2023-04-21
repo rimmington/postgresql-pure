@@ -48,7 +48,7 @@ import           Database.PostgreSQL.Pure.Internal.Data          (Authentication
                                                                   BackendKeyData (BackendKeyData),
                                                                   ColumnInfo (ColumnInfo, typeOid),
                                                                   CommandComplete (CommandComplete),
-                                                                  CommandTag (BeginTag, CommitTag, CopyTag, CreateTableTag, DeleteTag, DropTableTag, FetchTag, InsertTag, MoveTag, RollbackTag, SelectTag, SetTag, StartTransactionTag, UpdateTag),
+                                                                  CommandTag (AlterTableTag, BeginTag, CommitTag, CopyTag, CreateTableTag, DeleteTag, DropTableTag, FetchTag, InsertTag, MoveTag, RollbackTag, SelectTag, SetTag, StartTransactionTag, UpdateTag),
                                                                   DataRow (DataRow), DataRowRaw (DataRowRaw),
                                                                   Debug (Debug), Error (Error),
                                                                   ErrorFields (ErrorFields),
@@ -268,6 +268,7 @@ commandComplete =
         void $ AP.word8 0
         pure $ CommandComplete $ CopyTag r
       <|> APC.string "CREATE TABLE" *> AP.word8 0 $> CommandComplete CreateTableTag
+      <|> APC.string "ALTER TABLE" *> AP.word8 0 $> CommandComplete AlterTableTag
       <|> APC.string "DROP TABLE" *> AP.word8 0 $> CommandComplete DropTableTag
       <|> APC.string "BEGIN" *> AP.word8 0 $> CommandComplete BeginTag
       <|> APC.string "START TRANSACTION" *> AP.word8 0 $> CommandComplete StartTransactionTag

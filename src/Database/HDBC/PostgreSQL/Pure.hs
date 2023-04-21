@@ -579,6 +579,7 @@ resultCount e =
           Pure.FetchTag n          -> n
           Pure.CopyTag n           -> n
           Pure.CreateTableTag      -> 0
+          Pure.AlterTableTag       -> 0
           Pure.DropTableTag        -> 0
           Pure.BeginTag            -> 0
           Pure.StartTransactionTag -> 0
