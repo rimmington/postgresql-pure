@@ -211,6 +211,7 @@ data CommandTag
   | MoveTag Int
   | FetchTag Int
   | CopyTag Int -- since PostgreSQL 8.2
+  | MergeTag Int -- since PostgreSQL 15
   | CreateTableTag
   | AlterTableTag
   | DropTableTag
@@ -541,6 +542,7 @@ instance Pretty CommandComplete where
   pretty (CommandComplete (MoveTag rows)) = "command complete:\n\ttag: move\n\t\trows: " <> show rows
   pretty (CommandComplete (FetchTag rows)) = "command complete:\n\ttag: fetch\n\t\trows: " <> show rows
   pretty (CommandComplete (CopyTag rows)) = "command complete:\n\ttag: copy\n\t\trows: " <> show rows
+  pretty (CommandComplete (MergeTag rows)) = "command complete:\n\ttag: merge\n\t\trows: " <> show rows
   pretty (CommandComplete CreateTableTag) = "command complete:\n\ttag: create table"
   pretty (CommandComplete AlterTableTag) = "command complete:\n\ttag: alter table"
   pretty (CommandComplete DropTableTag) = "command complete:\n\ttag: drop table"
