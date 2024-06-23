@@ -220,6 +220,7 @@ data CommandTag
   | CommitTag
   | RollbackTag
   | SetTag
+  | AlterSchemaTag
   | CreateSchemaTag
   | DropSchemaTag
   deriving (Show, Read, Eq)
@@ -553,6 +554,7 @@ instance Pretty CommandComplete where
   pretty (CommandComplete CommitTag) = "command complete:\n\ttag: commit"
   pretty (CommandComplete RollbackTag) = "command complete:\n\ttag: rollback"
   pretty (CommandComplete SetTag) = "command complete:\n\ttag: set"
+  pretty (CommandComplete AlterSchemaTag) = "command complete:\n\ttag: alter schema"
   pretty (CommandComplete CreateSchemaTag) = "command complete:\n\ttag: create schema"
   pretty (CommandComplete DropSchemaTag) = "command complete:\n\ttag: drop schema"
 

@@ -587,6 +587,7 @@ resultCount e =
           Pure.CommitTag           -> 0
           Pure.RollbackTag         -> 0
           Pure.SetTag              -> 0
+          Pure.AlterSchemaTag      -> 0
           Pure.DropSchemaTag       -> 0
           Pure.CreateSchemaTag     -> 0
       Pure.ExecuteEmptyQuery -> 0

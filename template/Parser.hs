@@ -48,7 +48,7 @@ import           Database.PostgreSQL.Pure.Internal.Data          (Authentication
                                                                   BackendKeyData (BackendKeyData),
                                                                   ColumnInfo (ColumnInfo, typeOid),
                                                                   CommandComplete (CommandComplete),
-                                                                  CommandTag (AlterTableTag, BeginTag, CommitTag, CopyTag, CreateSchemaTag, CreateTableTag, DeleteTag, DropSchemaTag, DropTableTag, FetchTag, InsertTag, MergeTag, MoveTag, RollbackTag, SelectTag, SetTag, StartTransactionTag, UpdateTag),
+                                                                  CommandTag (AlterSchemaTag, AlterTableTag, BeginTag, CommitTag, CopyTag, CreateSchemaTag, CreateTableTag, DeleteTag, DropSchemaTag, DropTableTag, FetchTag, InsertTag, MergeTag, MoveTag, RollbackTag, SelectTag, SetTag, StartTransactionTag, UpdateTag),
                                                                   DataRow (DataRow), DataRowRaw (DataRowRaw),
                                                                   Debug (Debug), Error (Error),
                                                                   ErrorFields (ErrorFields),
@@ -281,6 +281,7 @@ commandComplete =
       <|> APC.string "COMMIT" *> AP.word8 0 $> CommandComplete CommitTag
       <|> APC.string "ROLLBACK" *> AP.word8 0 $> CommandComplete RollbackTag
       <|> APC.string "SET" *> AP.word8 0 $> CommandComplete SetTag
+      <|> APC.string "ALTER SCHEMA" *> AP.word8 0 $> CommandComplete AlterSchemaTag
       <|> APC.string "CREATE SCHEMA" *> AP.word8 0 $> CommandComplete CreateSchemaTag
       <|> APC.string "DROP SCHEMA" *> AP.word8 0 $> CommandComplete DropSchemaTag
 
