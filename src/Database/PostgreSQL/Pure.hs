@@ -152,7 +152,7 @@ module Database.PostgreSQL.Pure
 import           Database.PostgreSQL.Pure.Internal.Connection (connect, disconnect, withConnection)
 import           Database.PostgreSQL.Pure.Internal.Data       (Address (AddressNotResolved, AddressResolved),
                                                                BackendParameters, CloseProcedure, ColumnInfo,
-                                                               CommandTag (AlterTableTag, BeginTag, CommitTag, CopyTag, CreateTableTag, DeleteTag, DropTableTag, FetchTag, InsertTag, MoveTag, RollbackTag, SelectTag, StartTransactionTag, UpdateTag),
+                                                               CommandTag (AlterTableTag, BeginTag, CommitTag, CopyTag, CreateSchemaTag, CreateTableTag, DeleteTag, DropSchemaTag, DropTableTag, FetchTag, InsertTag, MoveTag, RollbackTag, SelectTag, StartTransactionTag, UpdateTag),
                                                                Config (Config, address, database, password, receptionBufferSize, sendingBufferSize, user),
                                                                Connection (config, parameters, pid), ErrorFields,
                                                                ExecuteResult (ExecuteComplete, ExecuteEmptyQuery, ExecuteSuspended),

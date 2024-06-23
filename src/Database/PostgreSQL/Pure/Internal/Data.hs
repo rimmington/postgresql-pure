@@ -220,6 +220,8 @@ data CommandTag
   | CommitTag
   | RollbackTag
   | SetTag
+  | CreateSchemaTag
+  | DropSchemaTag
   deriving (Show, Read, Eq)
 
 data Response
@@ -551,6 +553,8 @@ instance Pretty CommandComplete where
   pretty (CommandComplete CommitTag) = "command complete:\n\ttag: commit"
   pretty (CommandComplete RollbackTag) = "command complete:\n\ttag: rollback"
   pretty (CommandComplete SetTag) = "command complete:\n\ttag: set"
+  pretty (CommandComplete CreateSchemaTag) = "command complete:\n\ttag: create schema"
+  pretty (CommandComplete DropSchemaTag) = "command complete:\n\ttag: drop schema"
 
 instance Show r => Pretty (DataRow r) where
   pretty (DataRow record) = "data:\n" <> show record
