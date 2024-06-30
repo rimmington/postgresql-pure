@@ -223,6 +223,7 @@ data CommandTag
   | AlterSchemaTag
   | CreateSchemaTag
   | DropSchemaTag
+  | CreateIndexTag
   deriving (Show, Read, Eq)
 
 data Response
@@ -557,6 +558,7 @@ instance Pretty CommandComplete where
   pretty (CommandComplete AlterSchemaTag) = "command complete:\n\ttag: alter schema"
   pretty (CommandComplete CreateSchemaTag) = "command complete:\n\ttag: create schema"
   pretty (CommandComplete DropSchemaTag) = "command complete:\n\ttag: drop schema"
+  pretty (CommandComplete CreateIndexTag) = "command complete:\n\ttag: create index"
 
 instance Show r => Pretty (DataRow r) where
   pretty (DataRow record) = "data:\n" <> show record

@@ -590,6 +590,7 @@ resultCount e =
           Pure.AlterSchemaTag      -> 0
           Pure.DropSchemaTag       -> 0
           Pure.CreateSchemaTag     -> 0
+          Pure.CreateIndexTag      -> 0
       Pure.ExecuteEmptyQuery -> 0
       Pure.ExecuteSuspended -> 0
 
